@@ -211,7 +211,7 @@
   }
 
   //  functionName :: Function -> String
-  var functionName = 'name' in function f() {} ?
+  var functionName = 'name' in Function ?
     function functionName(f) { return f.name; } :
     /* istanbul ignore next */
     function functionName(f) {
