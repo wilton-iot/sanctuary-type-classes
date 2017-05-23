@@ -221,6 +221,7 @@ test('Ord', function() {
   eq(Z.Ord.test([]), true);
   eq(Z.Ord.test({}), true);
   eq(Z.Ord.test(Math.abs), false);
+  eq(Z.Ord.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Semigroupoid', function() {
@@ -232,6 +233,7 @@ test('Semigroupoid', function() {
   eq(Z.Semigroupoid.test([]), false);
   eq(Z.Semigroupoid.test({}), false);
   eq(Z.Semigroupoid.test(Math.abs), true);
+  eq(Z.Semigroupoid.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Category', function() {
@@ -243,6 +245,7 @@ test('Category', function() {
   eq(Z.Category.test([]), false);
   eq(Z.Category.test({}), false);
   eq(Z.Category.test(Math.abs), true);
+  eq(Z.Category.test({constructor: function NotCategory() {}}), false);
 });
 
 test('Semigroup', function() {
@@ -253,6 +256,7 @@ test('Semigroup', function() {
   eq(Z.Semigroup.test(''), true);
   eq(Z.Semigroup.test([]), true);
   eq(Z.Semigroup.test({}), true);
+  eq(Z.Semigroup.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Monoid', function() {
@@ -263,6 +267,7 @@ test('Monoid', function() {
   eq(Z.Monoid.test(''), true);
   eq(Z.Monoid.test([]), true);
   eq(Z.Monoid.test({}), true);
+  eq(Z.Monoid.test({constructor: function NotMonoid() {}}), false);
 });
 
 test('Functor', function() {
@@ -273,6 +278,7 @@ test('Functor', function() {
   eq(Z.Functor.test(''), false);
   eq(Z.Functor.test([]), true);
   eq(Z.Functor.test({}), true);
+  eq(Z.Functor.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Bifunctor', function() {
@@ -284,6 +290,7 @@ test('Bifunctor', function() {
   eq(Z.Bifunctor.test([]), false);
   eq(Z.Bifunctor.test({}), false);
   eq(Z.Bifunctor.test(Tuple('abc', 123)), true);
+  eq(Z.Bifunctor.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Profunctor', function() {
@@ -295,6 +302,7 @@ test('Profunctor', function() {
   eq(Z.Profunctor.test([]), false);
   eq(Z.Profunctor.test({}), false);
   eq(Z.Profunctor.test(Math.abs), true);
+  eq(Z.Profunctor.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Apply', function() {
@@ -305,6 +313,7 @@ test('Apply', function() {
   eq(Z.Apply.test(''), false);
   eq(Z.Apply.test([]), true);
   eq(Z.Apply.test({}), true);
+  eq(Z.Apply.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Applicative', function() {
@@ -315,6 +324,7 @@ test('Applicative', function() {
   eq(Z.Applicative.test(''), false);
   eq(Z.Applicative.test([]), true);
   eq(Z.Applicative.test({}), false);
+  eq(Z.Applicative.test({constructor: function NotApplicative() {}}), false);
 });
 
 test('Chain', function() {
@@ -325,6 +335,7 @@ test('Chain', function() {
   eq(Z.Chain.test(''), false);
   eq(Z.Chain.test([]), true);
   eq(Z.Chain.test({}), false);
+  eq(Z.Chain.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('ChainRec', function() {
@@ -335,6 +346,7 @@ test('ChainRec', function() {
   eq(Z.ChainRec.test(''), false);
   eq(Z.ChainRec.test([]), true);
   eq(Z.ChainRec.test({}), false);
+  eq(Z.ChainRec.test({constructor: function NotChainRec() {}}), false);
 });
 
 test('Monad', function() {
@@ -345,6 +357,7 @@ test('Monad', function() {
   eq(Z.Monad.test(''), false);
   eq(Z.Monad.test([]), true);
   eq(Z.Monad.test({}), false);
+  eq(Z.Monad.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Alt', function() {
@@ -355,6 +368,7 @@ test('Alt', function() {
   eq(Z.Alt.test(''), false);
   eq(Z.Alt.test([]), true);
   eq(Z.Alt.test({}), true);
+  eq(Z.Alt.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Plus', function() {
@@ -365,6 +379,7 @@ test('Plus', function() {
   eq(Z.Plus.test(''), false);
   eq(Z.Plus.test([]), true);
   eq(Z.Plus.test({}), true);
+  eq(Z.Plus.test({constructor: function NotPlus() {}}), false);
 });
 
 test('Alternative', function() {
@@ -375,6 +390,7 @@ test('Alternative', function() {
   eq(Z.Alternative.test(''), false);
   eq(Z.Alternative.test([]), true);
   eq(Z.Alternative.test({}), false);
+  eq(Z.Alternative.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Foldable', function() {
@@ -385,6 +401,7 @@ test('Foldable', function() {
   eq(Z.Foldable.test(''), false);
   eq(Z.Foldable.test([]), true);
   eq(Z.Foldable.test({}), true);
+  eq(Z.Foldable.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Traversable', function() {
@@ -395,6 +412,7 @@ test('Traversable', function() {
   eq(Z.Traversable.test(''), false);
   eq(Z.Traversable.test([]), true);
   eq(Z.Traversable.test({}), true);
+  eq(Z.Traversable.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Extend', function() {
@@ -405,6 +423,7 @@ test('Extend', function() {
   eq(Z.Extend.test(''), false);
   eq(Z.Extend.test([]), true);
   eq(Z.Extend.test({}), false);
+  eq(Z.Extend.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Comonad', function() {
@@ -416,6 +435,7 @@ test('Comonad', function() {
   eq(Z.Comonad.test([]), false);
   eq(Z.Comonad.test({}), false);
   eq(Z.Comonad.test(Identity(0)), true);
+  eq(Z.Comonad.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('Contravariant', function() {
@@ -427,6 +447,7 @@ test('Contravariant', function() {
   eq(Z.Contravariant.test([]), false);
   eq(Z.Contravariant.test({}), false);
   eq(Z.Contravariant.test(Math.abs), true);
+  eq(Z.Contravariant.test({constructor: {'@@type': 'toString'}}), false);
 });
 
 test('toString', function() {
