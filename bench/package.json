@@ -1,0 +1,17 @@
+{
+  "name": "sanctuary-type-classes-benchmarks",
+  "version": "0.0.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js"
+  },
+  "license": "WTFPL",
+  "dependencies": {
+    "benchmark": "2.1.x",
+    "cli-table": "0.3.x",
+    "colors": "1.1.x",
+    "sanctuary-type-classes": "5.2.0"
+  }
+}

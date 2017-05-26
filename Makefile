@@ -36,6 +36,11 @@ index.js.tmp: index.js
 	sed -e '/^[/][/]:/ s,\($(SED_WORD_START)[[:alnum:]]*\),<a href="#\1">\1</a>,g' -e 's,^//:,//.,' '$<' >'$@'
 
 
+.PHONY: bench
+bench:
+	node bench
+
+
 .PHONY: doctest
 doctest: index-no-blockquotes.js
 ifeq ($(shell node --version | cut -d . -f 1),v6)
@@ -62,6 +67,11 @@ lint:
 	$(ESLINT) \
 	  --env node \
 	  -- $(PREDOCTEST)
+	$(ESLINT) \
+	  --env node \
+	  --rule 'key-spacing: [off]' \
+	  --rule 'max-len: [off]' \
+	  -- bench/index.js bench/benchmark.js
 	$(ESLINT) \
 	  --env node \
 	  --global test \
