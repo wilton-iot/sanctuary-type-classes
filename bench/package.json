@@ -3,15 +3,9 @@
   "version": "0.0.0",
   "main": "index.js",
   "private": true,
-  "scripts": {
-    "start": "node index.js",
-    "test": "node index.js"
-  },
   "license": "WTFPL",
   "dependencies": {
-    "benchmark": "2.1.x",
-    "cli-table": "0.3.x",
-    "colors": "1.1.x",
+    "sanctuary-benchmark": "github:sanctuary-js/sanctuary-benchmark#242931016c39a29a35980a620d16dbac21bd6ef5",
     "sanctuary-type-classes": "5.2.0"
   }
 }
