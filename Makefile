@@ -1,3 +1,4 @@
+BENCHMARK = node_modules/.bin/sanctuary-benchmark --colors
 DOCTEST = node_modules/.bin/doctest --module commonjs --prefix .
 ESLINT = node_modules/.bin/eslint --config node_modules/sanctuary-style/eslint-es3.json --env es3
 ISTANBUL = node_modules/.bin/istanbul
@@ -38,7 +39,7 @@ index.js.tmp: index.js
 
 .PHONY: bench
 bench:
-	node bench
+	$(BENCHMARK)
 
 
 .PHONY: doctest

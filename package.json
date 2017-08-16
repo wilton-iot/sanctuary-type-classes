@@ -23,6 +23,7 @@
     "remark-lint-no-undefined-references": "1.x.x",
     "remark-lint-no-unused-definitions": "1.x.x",
     "remember-bower": "0.1.x",
+    "sanctuary-benchmark": "github:sanctuary-js/sanctuary-benchmark#68cf822879ac6098484059a2342914da764b80a5",
     "sanctuary-style": "0.5.x",
     "transcribe": "0.5.x",
     "xyz": "2.0.x"
