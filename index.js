@@ -56,13 +56,13 @@
 //.                                             /           /         \           \
 //.                                           Plus    Applicative    Chain      Comonad
 //.                                          (zero)       (of)      (chain)    (extract)
-//.                                             \         / \         / \
-//.                                              \       /   \       /   \
-//.                                               \     /     \     /     \
-//.                                                \   /       \   /       \
-//.                                                 \ /         \ /         \
-//.                                             Alternative    Monad     ChainRec
-//.                                                                     (chainRec)
+//.                                           / \         / \         / \
+//.                                          /   \       /   \       /   \
+//.                                         /     \     /     \     /     \
+//.                                        /       \   /       \   /       \
+//.                                       /         \ /         \ /         \
+//.                                 Filterable  Alternative    Monad     ChainRec
+//.                                  (filter)                           (chainRec)
 //. </pre>
 /* eslint-enable max-len */
 //.
@@ -493,6 +493,19 @@
   //. ```
   var Plus = $('Plus', [Alt], {zero: Constructor});
 
+  //# Filterable :: TypeClass
+  //.
+  //. `TypeClass` value for [Filterable][].
+  //.
+  //. ```javascript
+  //. > Filterable.test({})
+  //. true
+  //.
+  //. > Filterable.test('')
+  //. false
+  //. ```
+  var Filterable = $('Filterable', [Plus], {filter: Value});
+
   //# Alternative :: TypeClass
   //.
   //. `TypeClass` value for [Alternative][].
@@ -792,6 +805,11 @@
   //  Array$prototype$alt :: Array a ~> Array a -> Array a
   var Array$prototype$alt = Array$prototype$concat;
 
+  //  Array$prototype$filter :: Array a ~> (a -> Boolean) -> Array a
+  function Array$prototype$filter(pred) {
+    return this.filter(function(x) { return pred(x); });
+  }
+
   //  Array$prototype$reduce :: Array a ~> ((b, a) -> b, b) -> b
   function Array$prototype$reduce(f, initial) {
     return this.reduce(function(acc, x) { return f(acc, x); }, initial);
@@ -917,6 +935,13 @@
 
   //  Object$prototype$alt :: StrMap a ~> StrMap a -> StrMap a
   var Object$prototype$alt = Object$prototype$concat;
+
+  //  Object$prototype$filter :: StrMap a ~> (a -> Boolean) -> StrMap a
+  function Object$prototype$filter(pred) {
+    var result = {};
+    forEachKey(this, function(k) { if (pred(this[k])) result[k] = this[k]; });
+    return result;
+  }
 
   //  Object$prototype$reduce :: StrMap a ~> ((b, a) -> b, b) -> b
   function Object$prototype$reduce(f, initial) {
@@ -1061,6 +1086,7 @@
         'fantasy-land/ap':          Array$prototype$ap,
         'fantasy-land/chain':       Array$prototype$chain,
         'fantasy-land/alt':         Array$prototype$alt,
+        'fantasy-land/filter':      Array$prototype$filter,
         'fantasy-land/reduce':      Array$prototype$reduce,
         'fantasy-land/traverse':    Array$prototype$traverse,
         'fantasy-land/extend':      Array$prototype$extend
@@ -1090,6 +1116,7 @@
         'fantasy-land/map':         Object$prototype$map,
         'fantasy-land/ap':          Object$prototype$ap,
         'fantasy-land/alt':         Object$prototype$alt,
+        'fantasy-land/filter':      Object$prototype$filter,
         'fantasy-land/reduce':      Object$prototype$reduce,
         'fantasy-land/traverse':    Object$prototype$traverse
       }
@@ -1746,62 +1773,6 @@
     return ChainRec.methods.chainRec(typeRep)(f, x);
   }
 
-  //# filter :: (Applicative f, Foldable f, Monoid (f a)) => (a -> Boolean, f a) -> f a
-  //.
-  //. Filters its second argument in accordance with the given predicate.
-  //.
-  //. This function is derived from [`concat`](#concat), [`empty`](#empty),
-  //. [`of`](#of), and [`reduce`](#reduce).
-  //.
-  //. See also [`filterM`](#filterM).
-  //.
-  //. ```javascript
-  //. > filter(x => x % 2 == 1, [1, 2, 3])
-  //. [1, 3]
-  //.
-  //. > filter(x => x % 2 == 1, Cons(1, Cons(2, Cons(3, Nil))))
-  //. Cons(1, Cons(3, Nil))
-  //. ```
-  function filter(pred, m) {
-    //  Fast path for arrays.
-    if (Array.isArray(m)) return m.filter(function(x) { return pred(x); });
-    var M = m.constructor;
-    return reduce(function(m, x) { return pred(x) ? concat(m, of(M, x)) : m; },
-                  empty(M),
-                  m);
-  }
-
-  //# filterM :: (Alternative m, Monad m) => (a -> Boolean, m a) -> m a
-  //.
-  //. Filters its second argument in accordance with the given predicate.
-  //.
-  //. This function is derived from [`of`](#of), [`chain`](#chain), and
-  //. [`zero`](#zero).
-  //.
-  //. See also [`filter`](#filter).
-  //.
-  //. ```javascript
-  //. > filterM(x => x % 2 == 1, [1, 2, 3])
-  //. [1, 3]
-  //.
-  //. > filterM(x => x % 2 == 1, Cons(1, Cons(2, Cons(3, Nil))))
-  //. Cons(1, Cons(3, Nil))
-  //.
-  //. > filterM(x => x % 2 == 1, Nothing)
-  //. Nothing
-  //.
-  //. > filterM(x => x % 2 == 1, Just(0))
-  //. Nothing
-  //.
-  //. > filterM(x => x % 2 == 1, Just(1))
-  //. Just(1)
-  //. ```
-  function filterM(pred, m) {
-    var M = m.constructor;
-    var z = zero(M);
-    return chain(function(x) { return pred(x) ? of(M, x) : z; }, m);
-  }
-
   //# alt :: Alt f => (f a, f a) -> f a
   //.
   //. Function wrapper for [`fantasy-land/alt`][].
@@ -1845,6 +1816,69 @@
   //. ```
   function zero(typeRep) {
     return Plus.methods.zero(typeRep)();
+  }
+
+  //# filter :: Filterable f => (a -> Boolean, f a) -> f a
+  //.
+  //. Function wrapper for [`fantasy-land/filter`][]. Discards every element
+  //. of the given structure which does not satisfy the predicate.
+  //.
+  //. `fantasy-land/filter` implementations are provided for the following
+  //. built-in types: Array and Object.
+  //.
+  //. See also [`reject`](#reject).
+  //.
+  //. ```javascript
+  //. > filter(x => x % 2 == 1, [1, 2, 3])
+  //. [1, 3]
+  //.
+  //. > filter(x => x % 2 == 1, {x: 1, y: 2, z: 3})
+  //. {x: 1, z: 3}
+  //.
+  //. > filter(x => x % 2 == 1, Cons(1, Cons(2, Cons(3, Nil))))
+  //. Cons(1, Cons(3, Nil))
+  //.
+  //. > filter(x => x % 2 == 1, Nothing)
+  //. Nothing
+  //.
+  //. > filter(x => x % 2 == 1, Just(0))
+  //. Nothing
+  //.
+  //. > filter(x => x % 2 == 1, Just(1))
+  //. Just(1)
+  //. ```
+  function filter(pred, filterable) {
+    return Filterable.methods.filter(filterable)(pred);
+  }
+
+  //# reject :: Filterable f => (a -> Boolean, f a) -> f a
+  //.
+  //. Discards every element of the given structure which satisfies the
+  //. predicate.
+  //.
+  //. This function is derived from [`filter`](#filter).
+  //.
+  //. ```javascript
+  //. > reject(x => x % 2 == 1, [1, 2, 3])
+  //. [2]
+  //.
+  //. > reject(x => x % 2 == 1, {x: 1, y: 2, z: 3})
+  //. {y: 2}
+  //.
+  //. > reject(x => x % 2 == 1, Cons(1, Cons(2, Cons(3, Nil))))
+  //. Cons(2, Nil)
+  //.
+  //. > reject(x => x % 2 == 1, Nothing)
+  //. Nothing
+  //.
+  //. > reject(x => x % 2 == 1, Just(0))
+  //. Just(0)
+  //.
+  //. > reject(x => x % 2 == 1, Just(1))
+  //. Nothing
+  //. ```
+  function reject(pred, filterable) {
+    return filter(function(x) { return !pred(x); }, filterable);
   }
 
   //# reduce :: Foldable f => ((b, a) -> b, b, f a) -> b
@@ -2199,10 +2233,10 @@
     chain: chain,
     join: join,
     chainRec: chainRec,
-    filter: filter,
-    filterM: filterM,
     alt: alt,
     zero: zero,
+    filter: filter,
+    reject: reject,
     reduce: reduce,
     size: size,
     elem: elem,
@@ -2232,6 +2266,7 @@
 //. [Contravariant]:            https://github.com/fantasyland/fantasy-land#contravariant
 //. [Extend]:                   https://github.com/fantasyland/fantasy-land#extend
 //. [FL]:                       https://github.com/fantasyland/fantasy-land
+//. [Filterable]:               https://github.com/fantasyland/fantasy-land#filterable
 //. [Foldable]:                 https://github.com/fantasyland/fantasy-land#foldable
 //. [Functor]:                  https://github.com/fantasyland/fantasy-land#functor
 //. [Group]:                    https://github.com/fantasyland/fantasy-land#group
@@ -2256,6 +2291,7 @@
 //. [`fantasy-land/equals`]:    https://github.com/fantasyland/fantasy-land#equals-method
 //. [`fantasy-land/extend`]:    https://github.com/fantasyland/fantasy-land#extend-method
 //. [`fantasy-land/extract`]:   https://github.com/fantasyland/fantasy-land#extract-method
+//. [`fantasy-land/filter`]:    https://github.com/fantasyland/fantasy-land#filter-method
 //. [`fantasy-land/id`]:        https://github.com/fantasyland/fantasy-land#id-method
 //. [`fantasy-land/invert`]:    https://github.com/fantasyland/fantasy-land#invert-method
 //. [`fantasy-land/lte`]:       https://github.com/fantasyland/fantasy-land#lte-method

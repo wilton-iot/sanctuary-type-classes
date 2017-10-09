@@ -71,6 +71,14 @@ List.prototype[FL.chain] = function(f) {
 
 List.prototype[FL.alt] = List.prototype[FL.concat];
 
+List.prototype[FL.filter] = function(pred) {
+  return this.tag === 'Nil' ?
+    Nil :
+    pred(this.head) ?
+      Cons(this.head, Z.filter(pred, this.tail)) :
+      Z.filter(pred, this.tail);
+};
+
 List.prototype[FL.reduce] = function(f, x) {
   return this.tag === 'Nil' ?
     x :

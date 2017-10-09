@@ -1035,29 +1035,6 @@ test('chainRec', function() {
   eq(Z.chainRec(Function, stepper, 0)({step: 2, inc: 100}), 30100);
 });
 
-test('filter', function() {
-  eq(Z.filter.length, 2);
-  eq(Z.filter.name, 'filter');
-
-  eq(Z.filter(odd, []), []);
-  eq(Z.filter(odd, [1, 2, 3, 4, 5]), [1, 3, 5]);
-  eq(Z.filter(odd, Nil), Nil);
-  eq(Z.filter(odd, Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))), Cons(1, Cons(3, Cons(5, Nil))));
-});
-
-test('filterM', function() {
-  eq(Z.filterM.length, 2);
-  eq(Z.filterM.name, 'filterM');
-
-  eq(Z.filterM(odd, []), []);
-  eq(Z.filterM(odd, [1, 2, 3, 4, 5]), [1, 3, 5]);
-  eq(Z.filterM(odd, Nil), Nil);
-  eq(Z.filterM(odd, Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))), Cons(1, Cons(3, Cons(5, Nil))));
-  eq(Z.filterM(odd, Nothing), Nothing);
-  eq(Z.filterM(odd, Just(0)), Nothing);
-  eq(Z.filterM(odd, Just(1)), Just(1));
-});
-
 test('alt', function() {
   eq(Z.alt.length, 2);
   eq(Z.alt.name, 'alt');
@@ -1086,6 +1063,36 @@ test('zero', function() {
   eq(Z.zero(Array), []);
   eq(Z.zero(Object), {});
   eq(Z.zero(Maybe), Nothing);
+});
+
+test('filter', function() {
+  eq(Z.filter.length, 2);
+  eq(Z.filter.name, 'filter');
+
+  eq(Z.filter(odd, []), []);
+  eq(Z.filter(odd, [1, 2, 3, 4, 5]), [1, 3, 5]);
+  eq(Z.filter(odd, {}), {});
+  eq(Z.filter(odd, {x: 1, y: 2, z: 3}), {x: 1, z: 3});
+  eq(Z.filter(odd, Nil), Nil);
+  eq(Z.filter(odd, Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))), Cons(1, Cons(3, Cons(5, Nil))));
+  eq(Z.filter(odd, Nothing), Nothing);
+  eq(Z.filter(odd, Just(0)), Nothing);
+  eq(Z.filter(odd, Just(1)), Just(1));
+});
+
+test('reject', function() {
+  eq(Z.reject.length, 2);
+  eq(Z.reject.name, 'reject');
+
+  eq(Z.reject(odd, []), []);
+  eq(Z.reject(odd, [1, 2, 3, 4, 5]), [2, 4]);
+  eq(Z.reject(odd, {}), {});
+  eq(Z.reject(odd, {x: 1, y: 2, z: 3}), {y: 2});
+  eq(Z.reject(odd, Nil), Nil);
+  eq(Z.reject(odd, Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))), Cons(2, Cons(4, Nil)));
+  eq(Z.reject(odd, Nothing), Nothing);
+  eq(Z.reject(odd, Just(0)), Just(0));
+  eq(Z.reject(odd, Just(1)), Nothing);
 });
 
 test('reduce', function() {

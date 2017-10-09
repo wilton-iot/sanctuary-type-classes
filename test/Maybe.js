@@ -70,6 +70,10 @@ Maybe.prototype[FL.alt] = function(other) {
   return this.isJust ? this : other;
 };
 
+Maybe.prototype[FL.filter] = function(pred) {
+  return this.isJust && pred(this.value) ? this : Maybe.Nothing;
+};
+
 Maybe.prototype[FL.reduce] = function(f, x) {
   return this.isJust ? f(x, this.value) : x;
 };
