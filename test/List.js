@@ -1,11 +1,12 @@
+define(function(){var require = WILTON_requiresync;var module = {exports: {}};var exports = module.exports;
 'use strict';
 
 var FL = require('fantasy-land');
 
-var Z = require('..');
+var Z = require('sanctuary-type-classes');
 
-var curry2 = require('./curry2');
-var eq = require('./eq');
+var curry2 = require('sanctuary-type-classes/test/curry2');
+var eq = require('sanctuary-type-classes/test/eq');
 
 
 var List = {prototype: _List.prototype};
@@ -91,3 +92,5 @@ List.prototype.toString = function() {
 };
 
 module.exports = List;
+
+return module.exports;});

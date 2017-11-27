@@ -1,6 +1,7 @@
+define(function(){var require = WILTON_requiresync;var module = {exports: {}};var exports = module.exports;
 'use strict';
 
-var eq = require('./eq');
+var eq = require('sanctuary-type-classes/test/eq');
 
 
 //  curry2 :: ((a, b) -> c) -> (a -> b -> c)
@@ -14,3 +15,5 @@ module.exports = function curry2(f) {
     };
   };
 };
+
+return module.exports;});

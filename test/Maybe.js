@@ -1,8 +1,9 @@
+define(function(){var require = WILTON_requiresync;var module = {exports: {}};var exports = module.exports;
 'use strict';
 
 var FL = require('fantasy-land');
 
-var Z = require('..');
+var Z = require('sanctuary-type-classes');
 
 
 var Maybe = {prototype: _Maybe.prototype};
@@ -80,3 +81,5 @@ Maybe.prototype.toString = function() {
 };
 
 module.exports = Maybe;
+
+return module.exports;});

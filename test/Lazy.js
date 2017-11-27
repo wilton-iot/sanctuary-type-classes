@@ -1,8 +1,9 @@
+define(function(){var require = WILTON_requiresync;var module = {exports: {}};var exports = module.exports;
 'use strict';
 
 var FL = require('fantasy-land');
 
-var Z = require('..');
+var Z = require('sanctuary-type-classes');
 
 
 //  Lazy :: (() -> a) -> Lazy a
@@ -27,3 +28,5 @@ Lazy.prototype[FL.ap] = function(other) {
 };
 
 module.exports = Lazy;
+
+return module.exports;});
