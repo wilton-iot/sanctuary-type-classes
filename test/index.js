@@ -1,4 +1,4 @@
-define(function(){var require = WILTON_requiresync;var module = {exports: {}};var exports = module.exports;
+define(function(localRequire, exports, module) { var requireOrig = require; require = localRequire;
 'use strict';
 
 var type = require('sanctuary-type-identifiers');
@@ -1282,4 +1282,4 @@ test('contramap', function() {
   eq(Z.contramap(length, inc)('abc'), 4);
 });
 
-return module.exports;});
+require = requireOrig;});

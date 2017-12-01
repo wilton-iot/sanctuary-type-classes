@@ -1,4 +1,4 @@
-define(function(){var require = WILTON_requiresync;var module = {exports: {}};var exports = module.exports;
+define(function(localRequire, exports, module) { var requireOrig = require; require = localRequire;
 'use strict';
 
 var assert = require('assert');
@@ -13,4 +13,4 @@ module.exports = function eq(actual, expected) {
   assert.strictEqual(Z.equals(actual, expected), true);
 };
 
-return module.exports;});
+require = requireOrig;});
